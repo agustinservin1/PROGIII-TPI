@@ -20,5 +20,6 @@ namespace Domain.Entities
         public Patient Patient { get; set; }
         [ForeignKey("Patient")]
         public int PatientId { get; set; }
+       
     }
 }
