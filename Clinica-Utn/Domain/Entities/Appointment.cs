@@ -14,10 +14,13 @@ namespace Domain.Entities
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
-        //public int DoctorId { get; set; }
-        //public int? PatientId { get; set; } //Agregue el int nulleable para que me permita usar el crear el turno sin un paciente.
+
         public Doctor Doctor { get; set; }
+        [ForeignKey("Doctor")]
+        public int DoctorId { get; set; }
         public Patient? Patient { get; set; }
+        [ForeignKey("Patient")]
+        public int? PatientId { get; set; } //Agregue el int nulleable para que me permita usar el crear el turno sin un paciente.
         public DateTime Date { get; set; }
         public TimeSpan Time { get; set; }
         public AppointmentStatus Status { get; set; }
