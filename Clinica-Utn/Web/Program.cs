@@ -22,6 +22,7 @@ builder.Services.AddScoped<IDoctorRepository, DoctorRepository>();
 
 //Ciclo de vida servivios
 builder.Services.AddScoped<IDoctorService, DoctorService>();
+builder.Services.AddScoped<ISpecialtyService, SpecialtyService>();
 
 var app = builder.Build();
 

@@ -14,7 +14,7 @@ namespace Application.Models
 
         public string Description { get; set; } = string.Empty;
 
-        public static SpecialtyDto CreateSpecilityDto(Specialty specialty)
+        public static SpecialtyDto CreateSpecialtyDto(Specialty specialty)
         {
             var specialtyDto = new SpecialtyDto()
             {
