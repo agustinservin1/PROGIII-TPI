@@ -24,5 +24,10 @@ namespace Application.Services
 
             return SpecialtyDto.CreateSpecialtyDto(specialty);
         }
+        public IEnumerable<SpecialtyDto> GetAllSpecialties()
+        {
+            var list = _specialtyRepository.GetAll();
+            return SpecialtyDto.CreateListDto(list);
+        }
     }
 }

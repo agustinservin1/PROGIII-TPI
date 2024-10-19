@@ -11,6 +11,8 @@ namespace Application.Interfaces
     public interface ISpecialtyService
     {
         SpecialtyDto GetSpecialtyById(int id);
- 
+        IEnumerable<SpecialtyDto> GetAllSpecialties();
+
+
     }
 }
