@@ -11,11 +11,11 @@ namespace Infrastructure.Data
     public class SpecialtyRepository : BaseRepository<Specialty>, ISpecialtyRepository
 
     {
-        private readonly ApplicationContext _repository;
+        private readonly ApplicationContext _context;
 
-        public SpecialtyRepository(ApplicationContext repository) : base(repository)
+        public SpecialtyRepository(ApplicationContext context) : base(context)
         {
-            repository = _repository;
+           _context = context;
         }
 
     }
