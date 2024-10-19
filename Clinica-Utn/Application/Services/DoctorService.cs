@@ -22,6 +22,9 @@ namespace Application.Services
             var doctor = _doctorRepository.GetById(id);
             return DoctorDto.CreateDoctorDto(doctor);
         }
-
-    }
+        public IEnumerable<DoctorDto> GetAll()
+        {
+            var list = _doctorRepository.GetAll();
+            return DoctorDto.CreatelistDto(list);
+        }
 }
