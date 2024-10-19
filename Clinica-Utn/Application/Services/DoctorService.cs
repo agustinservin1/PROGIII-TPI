@@ -1,5 +1,6 @@
 ﻿using Application.Interfaces;
 using Application.Models;
+using Domain.InterFaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +11,17 @@ namespace Application.Services
 {
     public class DoctorService : IDoctorService
     {
-        
+        private readonly IDoctorRepository _doctorRepository;
+        public DoctorService(IDoctorRepository doctorRepository)
+        {
+            _doctorRepository = doctorRepository;
+        }
+
+        public DoctorDto GetById(int id)
+        {
+            var doctor = _doctorRepository.GetById(id);
+            return DoctorDto.CreateDoctorDto(doctor);
+        }
+
     }
 }

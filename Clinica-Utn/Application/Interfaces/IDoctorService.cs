@@ -9,6 +9,7 @@ namespace Application.Interfaces
 {
     public interface IDoctorService
     {
-        
+        DoctorDto GetById(int id);
+
     }
 }
