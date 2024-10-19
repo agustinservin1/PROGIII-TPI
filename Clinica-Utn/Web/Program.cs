@@ -1,3 +1,5 @@
+using Application.Interfaces;
+using Application.Services;
 using Domain.InterFaces;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
@@ -17,6 +19,9 @@ builder.Services.AddDbContext<ApplicationContext>(options =>
 //Ciclo de vida repositorios
 builder.Services.AddScoped<ISpecialtyRepository, SpecialtyRepository>();
 builder.Services.AddScoped<IDoctorRepository, DoctorRepository>();
+
+//Ciclo de vida servivios
+builder.Services.AddScoped<IDoctorService, DoctorService>();
 
 var app = builder.Build();
 
