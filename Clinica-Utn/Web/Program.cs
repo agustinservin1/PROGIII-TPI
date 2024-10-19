@@ -1,3 +1,4 @@
+using Domain.InterFaces;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,6 +13,9 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<ApplicationContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("DbConnectionStrings")));
+
+
+builder.Services.AddScoped<ISpecialtyRepository, SpecialtyRepository>();
 
 var app = builder.Build();
 
