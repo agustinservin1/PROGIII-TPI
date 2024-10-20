@@ -1,6 +1,7 @@
 ﻿using Application.Models;
 using Application.Models.Request;
 using Domain.Entities;
+using Domain.Exceptions;
 using Domain.InterFaces;
 using System;
 using System.Collections.Generic;
@@ -22,57 +23,93 @@ namespace Application.Services
         public PatientDto? GetPatientById(int id)
         {
             var Patient = _repository.GetById(id);
-            if (Patient != null)
+
+            if (Patient == null)
             {
-                return PatientDto.CreatePatient(Patient);
-
+                throw new NotFoundException($"No se encontró el paciente con el id {id}");
             }
-
-            throw new ArgumentException("failled");
+            
+            return PatientDto.CreatePatient(Patient);
 
         }
         public PatientDto? GetPatientByIdWithAddress(int id)
         {
             var patient = _repository.GetByIdIncludeAddress(id);
 
-            if (patient != null)
+            if (patient == null)
             {
-                return PatientDto.CreatePatient(patient);
-
+                throw new NotFoundException($"No se encontró el paciente con el id {id}");
             }
-
-            throw new ArgumentException("failled");
-        }
-            public PatientDto CreatePatient(PatientCreateRequest patient)
-            { 
-            var newAdress = new Address()
-            {
-                Street = patient.Address.Street,
-                PostalCode = patient.Address.PostalCode,
-                City = patient.Address.City,
-                Province = patient.Address.Province,
-            };
-
-            var entity = new Patient()
-            {
-                Name = patient.Name,
-                LastName = patient.LastName,
-                PhoneNumber = patient.PhoneNumber,
-                DateOfBirth = patient.DateOfBirth,
-                Address = newAdress,
-                Email = patient.Email,
-                Password = patient.Password,
-            };
-
-            var newEntity = _repository.Create(entity);
-            return PatientDto.CreatePatient(newEntity);
-
-
+            return PatientDto.CreatePatient(patient);
         }
 
-       
+        public PatientDto CreatePatient(PatientCreateRequest patient)
+        { 
+                var newAdress = new Address()
+                {
+                    Street = patient.Address.Street,
+                    PostalCode = patient.Address.PostalCode,
+                    City = patient.Address.City,
+                    Province = patient.Address.Province,
+                };
 
-       
+                var entity = new Patient()
+                {
+                    Name = patient.Name,
+                    LastName = patient.LastName,
+                    PhoneNumber = patient.PhoneNumber,
+                    DateOfBirth = patient.DateOfBirth,
+                    Address = newAdress,
+                    Email = patient.Email,
+                    Password = patient.Password,
+                };
 
+                var newEntity = _repository.Create(entity);
+                return PatientDto.CreatePatient(newEntity);
+        }
+
+        public PatientDto UpdatePatient(int id, PatientUpdateForRequest patient)
+        {
+            var entity = _repository.GetByIdIncludeAddress(id);
+
+            if (entity == null)
+            {
+                throw new NotFoundException($"No se encontró el paciente con el id {id}");
+            }
+            //Revisar esta validaciones.
+            if (patient.Address == null)
+            {
+                throw new NotFoundException($"No se encontró la direccion con el id {id}");
+            }
+            
+                entity.Name = patient.Name;
+                entity.LastName = patient.LastName;
+                entity.PhoneNumber = patient.PhoneNumber;
+                entity.DateOfBirth = patient.DateOfBirth;
+                entity.Address.City = patient.Address.City;
+                entity.Address.Street = patient.Address.Street;
+                entity.Address.Province = patient.Address.Province;
+                entity.Address.PostalCode = patient.Address.PostalCode;
+
+               
+                var newEntity = _repository.Update(entity);
+                return PatientDto.CreatePatient(newEntity);
+           
+        }
+
+        public PatientDto DeletePatient(int id)
+        {
+
+            var entity = _repository.GetByIdIncludeAddress(id);
+
+
+            if (entity == null)
+            {
+                throw new NotFoundException($"No se encontró el paciente con el id {id}");
+            }
+            var patient = _repository.Delete(entity);
+            return PatientDto.CreatePatient(patient);
+
+        }
     }
 }

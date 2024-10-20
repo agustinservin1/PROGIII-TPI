@@ -12,7 +12,7 @@ namespace Domain.InterFaces
         T? GetById<TId>(TId id);
         IEnumerable<T> GetAll();
         T Update(T entity);
-        T Delete<TId>(T entity);
+        T Delete(T entity);
         T Create(T entity);
     }
 }
