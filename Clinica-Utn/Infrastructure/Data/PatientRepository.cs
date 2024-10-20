@@ -1,4 +1,5 @@
 ﻿using Domain.Entities;
+using Domain.InterFaces;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Infrastructure.Data
 {
-    public class PatientRepository : BaseRepository<Patient>
+    public class PatientRepository : BaseRepository<Patient>,IPatientRepository
     {
         private readonly ApplicationContext _repository;
 

@@ -19,6 +19,7 @@ builder.Services.AddDbContext<ApplicationContext>(options =>
 //Ciclo de vida repositorios
 builder.Services.AddScoped<ISpecialtyRepository, SpecialtyRepository>();
 builder.Services.AddScoped<IDoctorRepository, DoctorRepository>();
+builder.Services.AddScoped<IPatientRepository, PatientRepository>();
 
 //Ciclo de vida servivios
 builder.Services.AddScoped<IDoctorService, DoctorService>();
