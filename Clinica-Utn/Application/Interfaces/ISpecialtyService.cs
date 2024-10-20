@@ -12,6 +12,7 @@ namespace Application.Interfaces
     {
         SpecialtyDto GetSpecialtyById(int id);
         IEnumerable<SpecialtyDto> GetAllSpecialties();
+        SpecialtyDto CreateSpecialty(SpecialtyForRequest specialty);
 
 
     }

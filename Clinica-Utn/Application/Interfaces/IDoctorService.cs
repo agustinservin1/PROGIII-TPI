@@ -12,6 +12,11 @@ namespace Application.Interfaces
     {
         DoctorDto GetById(int id);
         IEnumerable<DoctorDto> GetAll();
+        DoctorDto CreateDoctor(DoctorCreateRequest doctor);
+        DoctorDto UpdateDoctor(int id, DoctorUpdateRequest doctor);
+        DoctorDto DeleteDoctor(int id);
+        IEnumerable<DoctorDto> GetBySpecialty(int id);
+
 
     }
 }

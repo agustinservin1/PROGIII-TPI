@@ -1,5 +1,7 @@
 ﻿using Application.Interfaces;
 using Application.Models;
+using Application.Models.Request;
+using Domain.Entities;
 using Domain.InterFaces;
 using System;
 using System.Collections.Generic;
@@ -28,6 +30,16 @@ namespace Application.Services
         {
             var list = _specialtyRepository.GetAll();
             return SpecialtyDto.CreateListDto(list);
+        }
+        public SpecialtyDto CreateSpecialty(SpecialtyForRequest specialty)
+        {
+            var entity = new Specialty()
+            {
+                Name = specialty.Name,
+                Description = specialty.Description
+            };
+            var newSpecialty = _specialtyRepository.Create(entity);
+            return SpecialtyDto.CreateSpecialtyDto(newSpecialty);
         }
     }
 }
