@@ -27,4 +27,5 @@ namespace Application.Services
             var list = _doctorRepository.GetAll();
             return DoctorDto.CreatelistDto(list);
         }
+    }
 }

@@ -1,4 +1,5 @@
-﻿using Application.Models;
+﻿using Application.Interfaces;
+using Application.Models;
 using Application.Models.Request;
 using Domain.Entities;
 using Domain.Exceptions;
@@ -11,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace Application.Services
 {
-    public class PatientService
+    public class PatientService : IPatientService
     {
         private readonly IPatientRepository _repository;
 
@@ -20,18 +21,6 @@ namespace Application.Services
             _repository = patientRepository;
         }
 
-        public PatientDto? GetPatientById(int id)
-        {
-            var Patient = _repository.GetById(id);
-
-            if (Patient == null)
-            {
-                throw new NotFoundException($"No se encontró el paciente con el id {id}");
-            }
-            
-            return PatientDto.CreatePatient(Patient);
-
-        }
         public PatientDto? GetPatientByIdWithAddress(int id)
         {
             var patient = _repository.GetByIdIncludeAddress(id);
@@ -41,6 +30,12 @@ namespace Application.Services
                 throw new NotFoundException($"No se encontró el paciente con el id {id}");
             }
             return PatientDto.CreatePatient(patient);
+        }
+
+        public IEnumerable<PatientDto> GetPatientsWithAddress() 
+        {
+            var list = _repository.GetAllPatientWithAddress();
+            return PatientDto.CreateList(list);
         }
 
         public PatientDto CreatePatient(PatientCreateRequest patient)
@@ -101,7 +96,6 @@ namespace Application.Services
         {
 
             var entity = _repository.GetByIdIncludeAddress(id);
-
 
             if (entity == null)
             {

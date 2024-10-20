@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
+#region
 // Add services to the container.
 
 builder.Services.AddControllers();
@@ -13,17 +14,20 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+//Conexion db
 builder.Services.AddDbContext<ApplicationContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("DbConnectionStrings")));
 
-//Ciclo de vida repositorios
+// Repositorios
 builder.Services.AddScoped<ISpecialtyRepository, SpecialtyRepository>();
 builder.Services.AddScoped<IDoctorRepository, DoctorRepository>();
 builder.Services.AddScoped<IPatientRepository, PatientRepository>();
 
-//Ciclo de vida servivios
+//Servicios
 builder.Services.AddScoped<IDoctorService, DoctorService>();
 builder.Services.AddScoped<ISpecialtyService, SpecialtyService>();
+builder.Services.AddScoped<IPatientService,PatientService>();
+#endregion
 
 var app = builder.Build();
 

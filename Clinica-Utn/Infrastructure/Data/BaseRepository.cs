@@ -34,7 +34,7 @@ namespace Infrastructure.Data
             return entity;
         }
 
-        public T Delete<TId>(T entity)
+        public T Delete(T entity)
         {
             _context.Set<T>().Remove(entity);
             _context.SaveChanges();

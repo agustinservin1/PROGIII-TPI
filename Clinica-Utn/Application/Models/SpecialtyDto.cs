@@ -32,7 +32,7 @@ namespace Application.Models
 
             foreach (Specialty s in list)
             {
-                listDto.Add(CreateSpecilityDto(s));
+                listDto.Add(CreateSpecialtyDto(s));
             }
 
             return listDto;
