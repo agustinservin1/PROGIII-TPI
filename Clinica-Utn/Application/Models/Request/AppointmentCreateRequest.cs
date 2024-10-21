@@ -12,6 +12,5 @@ namespace Application.Models.Request
         public int PatientId { get; set; }
         public DateTime Date { get; set; }
         public TimeSpan Time { get; set; }
-        public string Office { get; set; } = string.Empty;
     }
 }

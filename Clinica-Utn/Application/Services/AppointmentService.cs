@@ -87,5 +87,21 @@ namespace Application.Services
                 }
             }
         }
+
+        public AppointmentDto CreateAppointment(AppointmentCreateRequest appointment)
+        {
+            var newAppointemnt = new Appointment()
+            {
+                DoctorId = appointment.DoctorId,
+                PatientId = appointment.PatientId,
+                Time = appointment.Time,
+                Date = appointment.Date
+            };
+
+            var entity = _appointmentRepository.Create(newAppointemnt);
+
+            return AppointmentDto.CreateDto(entity);
+        }
+
     }
 }
