@@ -11,6 +11,8 @@ namespace Domain.InterFaces
     {
         Appointment? GetAppointmentByWithPatientAndDoctor(int id);
         IEnumerable<Appointment> GetAppointmentByPatientId(int patientId);
+        IEnumerable<Appointment> GetAppointmentByDoctorId(int doctorId);
+        IEnumerable<Appointment> GetAvailableAppointmentsByDoctorAndDate(int doctorId, DateTime date);
     }
 
 }
