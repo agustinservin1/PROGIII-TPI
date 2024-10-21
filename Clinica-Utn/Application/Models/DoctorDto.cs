@@ -48,28 +48,5 @@ namespace Application.Models
             }
             return listDto;
         }
-        public DoctorDto UpdateDoctor(int id, DoctorUpdateRequest doctor)
-        {
-            var entity = _repository.GetById(id);
-            var Speciality = _speciality.GetById(doctor.SpecialityId);
-            if (Speciality == null)
-            {
-                throw new ArgumentException("error");
-            }
-
-            if (entity != null)
-            {
-                entity.Name = doctor.Name;
-                entity.LastName = doctor.LastName;
-                entity.PhoneNumber = doctor.PhoneNumber;
-                entity.DateOfBirth = doctor.DateOfBirth;
-                entity.SpecialityId = doctor.SpecialityId;
-
-
-                var newEntity = _doctorRepository.Update(entity);
-                return DoctorDto.CreateDoctorDto(newEntity);
-            }
-
-            throw new ArgumentException("All fields are required.");
-        }
+    }
 }
