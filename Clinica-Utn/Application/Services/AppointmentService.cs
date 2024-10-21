@@ -3,10 +3,12 @@ using Application.Models;
 using Application.Models.Request;
 using Domain.Entities;
 using Domain.Enums;
+using Domain.Exceptions;
 using Domain.InterFaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -29,7 +31,9 @@ namespace Application.Services
         {
             var appointment = _appointmentRepository.GetAppointmentByWithPatientAndDoctor(id);
 
-            return AppointmentDto.CreateDto(appointment);
+            return appointment == null
+                ? throw new NotFoundException($"No se encontró la cita con el id {id}")
+                : AppointmentDto.CreateDto(appointment);
         }
 
         public IEnumerable<AppointmentDto> GetAllByDoctorId(int id)
@@ -47,61 +51,124 @@ namespace Application.Services
         public void GenerateAppointmentForDoctor(int doctorId, DateRangeRequest Date)
         {
             var doctor = _doctorRepository.GetById(doctorId);
+
             if (doctor == null)
             {
-                throw new Exception("Doctor no encontrado.");
+                throw new NotFoundException("Doctor no encontrado.");
             }
 
-            for (var date = Date.StartDate; date <= Date.EndDate; date = date.AddDays(1)) // Iterar sobre los días
+            var appointmentsDb = _appointmentRepository.GetAppointmentByDoctorId(doctorId);
+
+            for (var date = Date.StartDate; date <= Date.EndDate; date = date.AddDays(1))
             {
                 if (date.DayOfWeek == DayOfWeek.Saturday || date.DayOfWeek == DayOfWeek.Sunday)
                 {
-                    continue; // Saltar sábados y domingos
+                    continue;
                 }
 
 
-                for (var time = new TimeSpan(9, 0, 0); time < new TimeSpan(12, 0, 0); time = time.Add(new TimeSpan(1, 0, 0))) // Iterar de 9:00 a 12:00
+                for (var time = new TimeSpan(9, 0, 0); time < new TimeSpan(12, 0, 0); time = time.Add(new TimeSpan(1, 0, 0)))
                 {
-                    var appointment = new Appointment
+                    var appointment = new AppointmentCreateRequest
                     {
                         DoctorId = doctorId,
                         Date = date.Date,
                         Time = time,
-                        Status = AppointmentStatus.Available // Precarga como disponible
-                    };
-                    _appointmentRepository.Create(appointment);
-                }
-
-
-                for (var time = new TimeSpan(14, 0, 0); time < new TimeSpan(18, 0, 0); time = time.Add(new TimeSpan(1, 0, 0))) // Iterar de 14:00 a 18:00
-                {
-                    var appointment = new Appointment
-                    {
-                        DoctorId = doctorId,
-                        Date = date.Date,
-                        Time = time,
-                        Status = AppointmentStatus.Available, // Precarga como disponible
+                        Status = AppointmentStatus.Available,
                         PatientId = null
                     };
-                    _appointmentRepository.Create(appointment);
+
+                    CreateAppointment(appointment);
+                }
+
+
+                for (var time = new TimeSpan(14, 0, 0); time < new TimeSpan(18, 0, 0); time = time.Add(new TimeSpan(1, 0, 0)))
+                {
+                    var appointment = new AppointmentCreateRequest
+                    {
+                        DoctorId = doctorId,
+                        Date = date.Date,
+                        Time = time,
+                        Status = AppointmentStatus.Available,
+                        PatientId = null
+                    };
+
+                    CreateAppointment(appointment);
                 }
             }
         }
 
         public AppointmentDto CreateAppointment(AppointmentCreateRequest appointment)
         {
-            var newAppointemnt = new Appointment()
-            {
-                DoctorId = appointment.DoctorId,
-                PatientId = appointment.PatientId,
-                Time = appointment.Time,
-                Date = appointment.Date
-            };
+            var appointmentsDb = _appointmentRepository.GetAppointmentByDoctorId(appointment.DoctorId);
 
-            var entity = _appointmentRepository.Create(newAppointemnt);
+            if (!appointmentsDb.Any(a => appointment.Date == a.Date && appointment.Time == a.Time))
+            {
+                var newAppointemnt = new Appointment()
+                {
+                    DoctorId = appointment.DoctorId,
+                    PatientId = appointment.PatientId,
+                    Time = appointment.Time,
+                    Date = appointment.Date,
+                    Status = AppointmentStatus.Available,
+                };
+
+                _appointmentRepository.Create(newAppointemnt);
+
+                return AppointmentDto.CreateDto(newAppointemnt);
+            }
+
+            throw new NotFoundException("Este turno ya existe.");
+        }
+
+        public AppointmentDto CancelAppointment(int IdAppointment)
+        {
+            var entity = _appointmentRepository.GetById(IdAppointment) ?? throw new Exception("Cita no encontrada.");
+
+            entity.Status = AppointmentStatus.Canceled;
+
+            _appointmentRepository.Update(entity);
 
             return AppointmentDto.CreateDto(entity);
         }
 
+        public AppointmentDto AssignAppointment(AppointmentAssignForRequest appointmentAssign)
+        {
+            var entity = _appointmentRepository.GetById(appointmentAssign.IdAppointment);
+
+            if (entity == null)
+            {
+                throw new Exception("Cita no encontrada.");
+            }
+
+            var patient = _patientRepository.GetByIdIncludeAddress(appointmentAssign.IdPatient);
+
+            if (patient == null)
+            {
+                throw new Exception("Paciente no encontrado.");
+            }
+
+            if (entity.Status != AppointmentStatus.Available)
+            {
+                throw new NotFoundException("No esta disponible.");
+            }
+
+            entity.PatientId = appointmentAssign.IdPatient;
+
+            entity.Status = AppointmentStatus.Reserved;
+
+            _appointmentRepository.Update(entity);
+
+            return AppointmentDto.CreateDto(entity);
+        }
+
+        public AppointmentDto DeleteAppointment(int IdAppointment)
+        {
+            var appointment = _appointmentRepository.GetById(IdAppointment);
+
+            var entity = _appointmentRepository.Delete(appointment);
+
+            return AppointmentDto.CreateDto(entity);
+        }
     }
 }

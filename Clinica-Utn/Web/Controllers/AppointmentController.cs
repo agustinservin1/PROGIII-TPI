@@ -1,6 +1,7 @@
 ﻿using Application.Interfaces;
 using Application.Models.Request;
 using Application.Services;
+using Domain.Exceptions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,7 +12,7 @@ namespace Web.Controllers
     public class AppointmentController : ControllerBase
     {
         private readonly IAppointmentService _appointmentService;
-        public AppointmentController(AppointmentService service)
+        public AppointmentController(IAppointmentService service)
         {
             _appointmentService = service;
         }
@@ -39,6 +40,32 @@ namespace Web.Controllers
         public IActionResult GetByDoctorAndDate([FromQuery] int doctorId, [FromQuery] DateTime date)
         {
             return Ok(_appointmentService.GetByDoctorAndDate(doctorId, date));
+        }
+
+        [HttpPost("/AssignAppointment")]
+        public IActionResult AssignAppointment([FromBody] AppointmentAssignForRequest appointmentAssign)
+        {
+            return Ok(_appointmentService.AssignAppointment(appointmentAssign));
+        }
+
+        [HttpPut("/Cancel{id}")]
+        public IActionResult UpdateAppointment(int id)
+        {
+            return Ok(_appointmentService.CancelAppointment(id));
+        }
+
+        [HttpDelete("/Delete{id}")]
+        public IActionResult DeleteAppointment(int id)
+        {
+            try
+            {
+                var appointment = _appointmentService.DeleteAppointment(id);
+                return NoContent();
+            }
+            catch (NotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Domain.Entities;
+using Domain.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,7 +15,7 @@ namespace Application.Models
         public int? PatientId { get; set; }
         public DateTime Date { get; set; }
         public TimeSpan Time { get; set; }
-        public string Office { get; set; } = string.Empty;
+        public AppointmentStatus Status { get; set; }
 
         public static AppointmentDto CreateDto(Appointment appointment)
         {
@@ -24,7 +25,8 @@ namespace Application.Models
                 DoctorId = appointment.DoctorId,
                 PatientId = appointment.PatientId,
                 Date = appointment.Date,
-                Time = appointment.Time
+                Time = appointment.Time,
+                Status = appointment.Status
             };
             return newAppointmentDto;
         }

@@ -1,4 +1,5 @@
 ﻿using Domain.Entities;
+using Domain.Enums;
 using Domain.InterFaces;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -52,6 +53,12 @@ namespace Infrastructure.Data
                                           .Include(d => d.Doctor)
                                           .Include(d => d.Patient)
                                           .ToList();
+        }
+
+        public IEnumerable<Appointment> GetByAvailable()
+        {
+            return _repository.Appointments.Where(a => a.Status == AppointmentStatus.Available)
+                                           .ToList();
         }
     }
 }

@@ -20,7 +20,7 @@ namespace Domain.Entities
         public int DoctorId { get; set; }
         public Patient? Patient { get; set; }
         [ForeignKey("Patient")]
-        public int? PatientId { get; set; } //Agregue el int nulleable para que me permita usar el crear el turno sin un paciente.
+        public int? PatientId { get; set; }
         public DateTime Date { get; set; }
         public TimeSpan Time { get; set; }
         public AppointmentStatus Status { get; set; }

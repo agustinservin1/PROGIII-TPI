@@ -16,7 +16,7 @@ namespace Application.Models.Request
         public DateTime DateOfBirth { get; set; }
         [Required]
         public int SpecialtyId { get; set; }
-        public int LicenseNumber { get; set; }
+
         [Required]
         [EmailAddress]
         public string Email { get; set; } = string.Empty;
