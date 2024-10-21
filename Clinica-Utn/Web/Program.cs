@@ -22,12 +22,15 @@ builder.Services.AddDbContext<ApplicationContext>(options =>
 builder.Services.AddScoped<ISpecialtyRepository, SpecialtyRepository>();
 builder.Services.AddScoped<IDoctorRepository, DoctorRepository>();
 builder.Services.AddScoped<IPatientRepository, PatientRepository>();
+builder.Services.AddScoped<IAppointmentRepository, AppointmentRepository>();
 
 //Servicios
 builder.Services.AddScoped<IDoctorService, DoctorService>();
 builder.Services.AddScoped<ISpecialtyService, SpecialtyService>();
 builder.Services.AddScoped<IPatientService,PatientService>();
+builder.Services.AddScoped<IAppointmentService, AppointmentService>();
 #endregion
+
 
 var app = builder.Build();
 
