@@ -30,7 +30,7 @@ namespace Web.Controllers
                 return NotFound(ex.Message);
             }
         }
-        [HttpGet("/GetAll")]
+        [HttpGet("/GetAllDoctors")]
         public IActionResult GetAllDoctors()
         {
             try
@@ -43,7 +43,7 @@ namespace Web.Controllers
                 return NotFound(ex.Message);
             }
         }
-        [HttpPost]
+        [HttpPost ("/AddDoctor")]
         public IActionResult AddDoctor([FromBody] DoctorCreateRequest request)
         {
             var newObj = _doctorService.CreateDoctor(request);

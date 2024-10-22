@@ -23,20 +23,20 @@ namespace Web.Controllers
             return Ok(_appointmentService.GetById(id));
         }
 
-        [HttpPost("generate/{doctorId}")]
+        [HttpPost("GenerateAppointments/{doctorId}")]
         public IActionResult GenerateAppointments(int doctorId, [FromBody] DateRangeRequest dateRange)
         {
             _appointmentService.GenerateAppointmentForDoctor(doctorId, dateRange);
             return Ok("Turnos generados con éxito.");
         }
 
-        [HttpGet("/Doctors/{doctorId}")]
+        [HttpGet("/GetAppointmentByDoctorId/{doctorId}")]
         public IActionResult GetAllByDoctorId(int doctorId)
         {
             return Ok(_appointmentService.GetAllByDoctorId(doctorId));
         }
 
-        [HttpGet("SearchByDoctorsAndDate/")]
+        [HttpGet("SearchAppointmentByDoctorsAndDate/")]
         public IActionResult GetByDoctorAndDate([FromQuery] int doctorId, [FromQuery] DateTime date)
         {
             return Ok(_appointmentService.GetByDoctorAndDate(doctorId, date));
@@ -48,13 +48,13 @@ namespace Web.Controllers
             return Ok(_appointmentService.AssignAppointment(appointmentAssign));
         }
 
-        [HttpPut("/Cancel{id}")]
+        [HttpPut("/CancelAppointment{id}")]
         public IActionResult UpdateAppointment(int id)
         {
             return Ok(_appointmentService.CancelAppointment(id));
         }
 
-        [HttpDelete("/Delete{id}")]
+        [HttpDelete("/DeleteAppointment{id}")]
         public IActionResult DeleteAppointment(int id)
         {
             try

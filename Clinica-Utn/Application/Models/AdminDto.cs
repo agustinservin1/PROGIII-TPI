@@ -41,7 +41,7 @@ namespace Application.Models
             List<AdminDto> listDto = new List<AdminDto>();
             foreach (var admin in admins)
             {
-                listDto.Add(CreateDoctorDto(admin));
+                listDto.Add(CreateAdminDto(admin));
             }
             return listDto;
         }

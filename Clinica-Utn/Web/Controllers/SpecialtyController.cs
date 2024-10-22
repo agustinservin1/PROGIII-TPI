@@ -43,7 +43,7 @@ namespace Web.Controllers
                 return NotFound(ex.Message);
             }
         }    
-        [HttpPost]
+        [HttpPost("/AddSpecialty")]
         public IActionResult AddSpecialty([FromBody] SpecialtyForRequest request)
         {   
             try
