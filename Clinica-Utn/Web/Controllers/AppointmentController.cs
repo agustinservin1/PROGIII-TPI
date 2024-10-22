@@ -36,6 +36,12 @@ namespace Web.Controllers
             return Ok(_appointmentService.GetAllByDoctorId(doctorId));
         }
 
+        [HttpGet("/GetAppointmentByPatientId/{patientId}")]
+        public IActionResult GetAllByPatientId(int patientId)
+        {
+            return Ok(_appointmentService.GetAllByPatientId(patientId));
+        }
+
         [HttpGet("SearchAppointmentByDoctorsAndDate/")]
         public IActionResult GetByDoctorAndDate([FromQuery] int doctorId, [FromQuery] DateTime date)
         {

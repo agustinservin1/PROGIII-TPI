@@ -2,6 +2,7 @@
 using Application.Models.Request;
 using Domain.Exceptions;
 using Domain.InterFaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -44,11 +45,13 @@ namespace Web.Controllers
             }
         }
         [HttpPost ("/AddDoctor")]
+        [Authorize(Policy = "Doctor")]
         public IActionResult AddDoctor([FromBody] DoctorCreateRequest request)
         {
             var newObj = _doctorService.CreateDoctor(request);
             return CreatedAtAction(nameof(GetWithSpecialty), new { id = newObj.Id }, newObj);
         }
+
         [HttpPut("/UpdateDoctor/{id}")]
         public IActionResult UpdateDoctor(int id, [FromBody] DoctorUpdateRequest request)
         {
@@ -64,7 +67,6 @@ namespace Web.Controllers
         }
 
         [HttpDelete("/DeleteDoctor/{id}")]
-
         public IActionResult DeleteDoctor(int id)
         {
             try

@@ -48,7 +48,7 @@ namespace Infrastructure.Services
                 var claimsForToken = new List<Claim>();
                 claimsForToken.Add(new Claim("sub", userAuthenticated.Id.ToString())); //"sub" es una key estándar que significa unique user identifier, es decir, si mandamos el id del usuario por convención lo hacemos con la key "sub".
                 claimsForToken.Add(new Claim("given_email", userAuthenticated.Email));
-                claimsForToken.Add(new Claim("UserRole", userAuthenticated.UserRole.ToString())); //debería venir de usuario evita ir hasta la bd
+                claimsForToken.Add(new Claim("role", userAuthenticated.UserRole.ToString())); //debería venir de usuario evita ir hasta la bd
 
                 var jwtSecurityToken = new JwtSecurityToken(
                   _config["Authentication:Issuer"],

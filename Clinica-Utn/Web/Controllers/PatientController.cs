@@ -50,7 +50,7 @@ namespace Web.Controllers
         }
 
         [HttpPost]
-        [Authorize(Policy = "Patient")]
+        //[Authorize(Policy = "Patient")]
         public IActionResult AddPatient([FromBody] PatientCreateRequest request)
         {
             var newObj = _service.CreatePatient(request);

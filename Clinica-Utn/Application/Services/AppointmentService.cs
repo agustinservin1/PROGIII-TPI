@@ -42,6 +42,12 @@ namespace Application.Services
             return AppointmentDto.CreateList(listAppointments);
         }
 
+        public IEnumerable<AppointmentDto> GetAllByPatientId(int id)
+        {
+            var listAppointments = _appointmentRepository.GetAppointmentByPatientId(id);
+            return AppointmentDto.CreateList(listAppointments);
+        }
+
         public IEnumerable<AppointmentDto> GetByDoctorAndDate(int idDoctor, DateTime date)
         {
             var list = _appointmentRepository.GetAvailableAppointmentsByDoctorAndDate(idDoctor, date);
@@ -153,12 +159,12 @@ namespace Application.Services
                 throw new NotFoundException("No esta disponible.");
             }
 
-            var currentTime = DateTime.Now.TimeOfDay;
+            //var currentTime = DateTime.Now.TimeOfDay;
 
-            if ((entity.Time - currentTime).TotalMinutes <= 30)
-            {
-                throw new NotFoundException("No se puede asignar turnos con menos de 30 minutos de anticipacion.");
-            }
+            //if ((entity.Time - currentTime).TotalMinutes <= 30)
+            //{
+            //    throw new NotFoundException("No se puede asignar turnos con menos de 30 minutos de anticipacion.");
+            //}
 
             entity.PatientId = appointmentAssign.IdPatient;
 
