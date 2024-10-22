@@ -21,7 +21,7 @@ namespace Application.Models
         [Required]
         public string Password { get; set; } = string.Empty;
 
-        public static AdminDto CreateDoctorDto(Admin admin)
+        public static AdminDto CreateAdminDto(Admin admin)
         {
             var adminDto = new AdminDto()
             {
