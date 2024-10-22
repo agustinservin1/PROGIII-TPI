@@ -88,5 +88,19 @@ namespace Application.Services
             return AdminDto.CreateAdminDto(entity);
         }
 
+        public AdminDto ChangeStatus(int id)
+        {
+            var entity = _adminRepository.GetById(id);
+
+            if (entity == null)
+            {
+                throw new NotFoundException($"No se encontró el Admin con el id {id}");
+            }
+
+            entity.IsAvailable = false;
+            _adminRepository.Update(entity);
+
+            return AdminDto.CreateAdminDto(entity);
+        }
     }
 }

@@ -77,5 +77,12 @@ namespace Web.Controllers
                 return NotFound(ex.Message);
             }
         }
-}
+
+        [HttpPut("/ChangeStatusAdmin/{id}")]
+        public IActionResult ChangeStatus(int id)
+        {
+            _adminService.ChangeStatus(id);
+            return NoContent();
+        }
+    }
 }

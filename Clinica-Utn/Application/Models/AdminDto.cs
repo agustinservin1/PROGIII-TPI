@@ -20,6 +20,7 @@ namespace Application.Models
         public string Email { get; set; } = string.Empty;
         [Required]
         public string Password { get; set; } = string.Empty;
+        public bool IsAvailable { get; set; }
 
         public static AdminDto CreateAdminDto(Admin admin)
         {
@@ -32,6 +33,7 @@ namespace Application.Models
                 DateOfBirth = admin.DateOfBirth,
                 Email = admin.Email,
                 Password = admin.Password,
+                IsAvailable = admin.IsAvailable,
             };
             return adminDto;
         }

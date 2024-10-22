@@ -15,5 +15,6 @@ namespace Application.Interfaces
         AdminDto CreateAdminDto(AdminCreateRequest admin);
         AdminDto UpdateDto(int id, UpdateAdminForRequest admin);
         AdminDto DeleteAdminDto(int id);
+        AdminDto ChangeStatus(int id);
     }
 }

@@ -153,6 +153,13 @@ namespace Application.Services
                 throw new NotFoundException("No esta disponible.");
             }
 
+            var currentTime = DateTime.Now.TimeOfDay;
+
+            if ((entity.Time - currentTime).TotalMinutes <= 30)
+            {
+                throw new NotFoundException("No se puede asignar turnos con menos de 30 minutos de anticipacion.");
+            }
+
             entity.PatientId = appointmentAssign.IdPatient;
 
             entity.Status = AppointmentStatus.Reserved;
