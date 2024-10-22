@@ -2,13 +2,16 @@
 using Application.Models.Request;
 using Application.Services;
 using Domain.Exceptions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Cryptography;
 
 namespace Web.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+  
     public class PatientController : ControllerBase
     {
         private readonly IPatientService _service;
@@ -45,7 +48,9 @@ namespace Web.Controllers
                 return NotFound(ex.Message);
             }
         }
+
         [HttpPost]
+        [Authorize(Policy = "Patient")]
         public IActionResult AddPatient([FromBody] PatientCreateRequest request)
         {
             var newObj = _service.CreatePatient(request);
