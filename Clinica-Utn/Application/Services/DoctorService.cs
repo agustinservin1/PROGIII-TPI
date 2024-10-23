@@ -2,6 +2,7 @@
 using Application.Models;
 using Application.Models.Request;
 using Domain.Entities;
+using Domain.Exceptions;
 using Domain.InterFaces;
 using System;
 using System.Collections.Generic;
@@ -38,7 +39,7 @@ namespace Application.Services
 
             if (specialty == null)
             {
-                throw new ArgumentException("ERROR");
+                throw new NotFoundException("No se encontro especialidad.");
             }
             var entity = new Doctor()
             {
@@ -61,7 +62,7 @@ namespace Application.Services
             var specialty = _specialtyRepository.GetById(doctor.SpecialtyId);
             if (specialty == null)
             {
-                throw new ArgumentException("error");
+                throw new NotFoundException("No se encontro especialidad.");
             }
 
             if (entity != null)
@@ -82,6 +83,10 @@ namespace Application.Services
         public DoctorDto DeleteDoctor(int id)
         {
             var doctor = _doctorRepository.GetById(id);
+            if (doctor == null)
+            {
+                throw new NotFoundException("No se encontro doctor.");
+            }
             var entity = _doctorRepository.Delete(doctor);
             return DoctorDto.CreateDoctorDto(entity);
 
@@ -89,6 +94,11 @@ namespace Application.Services
         public IEnumerable<DoctorDto> GetBySpecialty(int id)
         {
             var listDoctor = _doctorRepository.GetDoctorsBySpecialty(id);
+            if (listDoctor == null)
+            {
+                throw new NotFoundException("No se encontro especialidad.");
+            }
+
             return DoctorDto.CreatelistDto(listDoctor);
         }
 
