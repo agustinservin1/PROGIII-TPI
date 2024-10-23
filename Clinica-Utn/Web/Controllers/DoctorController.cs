@@ -45,13 +45,14 @@ namespace Web.Controllers
             }
         }
         [HttpPost ("/AddDoctor")]
-        [Authorize(Policy = "Doctor")]
+        [Authorize(Policy = "Admin")]
         public IActionResult AddDoctor([FromBody] DoctorCreateRequest request)
         {
             var newObj = _doctorService.CreateDoctor(request);
             return CreatedAtAction(nameof(GetWithSpecialty), new { id = newObj.Id }, newObj);
         }
 
+        [Authorize(Policy = "Doctor")]
         [HttpPut("/UpdateDoctor/{id}")]
         public IActionResult UpdateDoctor(int id, [FromBody] DoctorUpdateRequest request)
         {
