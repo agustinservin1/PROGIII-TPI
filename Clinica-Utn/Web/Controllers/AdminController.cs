@@ -19,29 +19,15 @@ namespace Web.Controllers
         [HttpGet("/GetAdminById/{id}")]
         public IActionResult GetAdminById(int id)
         {
-            try
-            {
                 var result = _adminService.GetById(id);
                 return Ok(result);
-            }
-            catch (NotFoundException ex)
-            {
-                return NotFound(ex.Message);
-            }
 
              }
         [HttpGet("/GetAllAdmins")]
         public IActionResult GetAllAdmins()
         {
-            try
-            {
                 var admins = _adminService.GetAll();
                 return Ok(admins);
-            }
-            catch (NotFoundException ex)
-            {
-                return NotFound(ex.Message);
-            }
         }
         [HttpPost("/AddAdmin")]
         public IActionResult AddAdmin([FromBody] AdminCreateRequest request)
@@ -52,30 +38,16 @@ namespace Web.Controllers
         [HttpPut("/UpdateAdmin/{id}")]
         public IActionResult UpdateAdmin(int id, [FromBody] UpdateAdminForRequest request)
         {
-            try
-            {
                 _adminService.UpdateDto(id, request);
                 return NoContent();
-            }
-            catch (NotFoundException ex)
-            {
-                return NotFound(ex.Message);
-            }
         }
 
         [HttpDelete("/DeleteAdmin/{id}")]
 
         public IActionResult DeleteAdmin(int id)
         {
-            try
-            {
                 _adminService.DeleteAdminDto(id);
                 return NoContent();
-            }
-            catch (NotFoundException ex)
-            {
-                return NotFound(ex.Message);
-            }
         }
 
         [HttpPut("/ChangeStatusAdmin/{id}")]

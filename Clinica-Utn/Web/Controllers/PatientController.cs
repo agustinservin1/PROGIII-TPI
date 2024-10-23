@@ -11,7 +11,7 @@ namespace Web.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-  
+
     public class PatientController : ControllerBase
     {
         private readonly IPatientService _service;
@@ -23,30 +23,16 @@ namespace Web.Controllers
 
         [HttpGet("{id}")]
 
-        public IActionResult GetWithAddress(int id) 
+        public IActionResult GetWithAddress(int id)
         {
-            try
-            {
-                var result = _service.GetPatientByIdWithAddress(id);
-                return Ok(result);
-            }
-            catch (NotFoundException ex)
-            {
-                return NotFound(ex.Message);
-            }
+            var result = _service.GetPatientByIdWithAddress(id);
+            return Ok(result);
         }
         [HttpGet()]
         public IActionResult GetAllPatientsWithAddress()
         {
-            try
-            {
-                var result = _service.GetPatientsWithAddress();
-                return Ok(result);
-            }
-            catch (NotFoundException ex)
-            {
-                return NotFound(ex.Message);
-            }
+            var result = _service.GetPatientsWithAddress();
+            return Ok(result);
         }
 
         [HttpPost]
@@ -61,30 +47,16 @@ namespace Web.Controllers
         [HttpPut("/{id}")]
         public IActionResult UpdatePatient(int id, [FromBody] PatientUpdateForRequest request)
         {
-            try
-            {
-                _service.UpdatePatient(id, request);
-                return NoContent();
-            }
-            catch (NotFoundException ex)
-            {
-                return NotFound(ex.Message);
-            }
+            _service.UpdatePatient(id, request);
+            return NoContent();
         }
 
         [HttpDelete("/{id}")]
 
         public IActionResult DeletePatient(int id)
         {
-            try
-            {
-                _service.DeletePatient(id);
-                return NoContent();
-            }
-            catch (NotFoundException ex)
-            {
-                return NotFound(ex.Message);
-            }
+            _service.DeletePatient(id);
+            return NoContent();
         }
 
     }

@@ -20,42 +20,20 @@ namespace Web.Controllers
         [HttpGet("/GetById/{id}")]
         public IActionResult GetById(int id)
         {
-            try
-            {
                 var result = _service.GetSpecialtyById(id);
                 return Ok(result);
-            }
-            catch (NotFoundException ex)
-            {
-                return NotFound(ex.Message);
-            }
         }
         [HttpGet("/GetAllSpecialties")]
         public IActionResult GetAllSpecialities()
         {
-            try
-            {
                 var result = _service.GetAllSpecialties();
                 return Ok(result);
-            }
-            catch (NotFoundException ex)
-            {
-                return NotFound(ex.Message);
-            }
         }    
         [HttpPost("/AddSpecialty")]
         public IActionResult AddSpecialty([FromBody] SpecialtyForRequest request)
-        {   
-            try
-            {
+        {
                 var newSpecialty = _service.CreateSpecialty(request);
                 return CreatedAtAction(nameof(GetById), new { id = newSpecialty.Id }, newSpecialty);
-
-            }
-            catch (NotFoundException ex)
-            {
-                return NotFound(ex.Message);
-            }
         }
     }
 }

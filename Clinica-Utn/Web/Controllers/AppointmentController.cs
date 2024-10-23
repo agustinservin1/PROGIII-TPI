@@ -63,15 +63,8 @@ namespace Web.Controllers
         [HttpDelete("/DeleteAppointment{id}")]
         public IActionResult DeleteAppointment(int id)
         {
-            try
-            {
                 var appointment = _appointmentService.DeleteAppointment(id);
                 return NoContent();
-            }
-            catch (NotFoundException ex)
-            {
-                return NotFound(ex.Message);
-            }
         }
     }
 }
