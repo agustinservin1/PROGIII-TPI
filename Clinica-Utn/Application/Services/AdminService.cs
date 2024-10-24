@@ -61,11 +61,6 @@ namespace Application.Services
                 throw new NotFoundException($"No se encontró el Admin con el id {id}");
             }
 
-            if (admin == null)
-            {
-                throw new NotFoundException("campos nulos.");
-            }
-
             entity.Name = admin.Name;
             entity.LastName = admin.LastName;
             entity.Email = admin.Email;

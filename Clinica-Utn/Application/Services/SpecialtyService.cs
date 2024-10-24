@@ -23,7 +23,10 @@ namespace Application.Services
         public SpecialtyDto GetSpecialtyById(int id)
         {
             var specialty = _specialtyRepository.GetById(id);
-
+            if (specialty == null) 
+            {
+                throw new ArgumentException($"No se encontro la especialidad con el id {id}");
+            }
             return SpecialtyDto.CreateSpecialtyDto(specialty);
         }
         public IEnumerable<SpecialtyDto> GetAllSpecialties()
@@ -38,6 +41,7 @@ namespace Application.Services
                 Name = specialty.Name,
                 Description = specialty.Description
             };
+
             var newSpecialty = _specialtyRepository.Create(entity);
             return SpecialtyDto.CreateSpecialtyDto(newSpecialty);
         }

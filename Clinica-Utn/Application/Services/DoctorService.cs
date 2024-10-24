@@ -7,6 +7,7 @@ using Domain.InterFaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -25,6 +26,10 @@ namespace Application.Services
         public DoctorDto GetById(int id)
         {
             var doctor = _doctorRepository.GetById(id);
+            if (doctor == null) 
+            {
+                throw new NotFoundException($"No se encontro el medico con el id {id}");
+            }
             return DoctorDto.CreateDoctorDto(doctor);
         }
         public IEnumerable<DoctorDto> GetAll()
@@ -34,13 +39,12 @@ namespace Application.Services
         }
         public DoctorDto CreateDoctor(DoctorCreateRequest doctor)
         {
-
             var specialty = _specialtyRepository.GetById(doctor.SpecialtyId);
-
             if (specialty == null)
             {
-                throw new NotFoundException("No se encontro especialidad.");
+                throw new NotFoundException($"No se encontro la especialidad con el id {doctor.SpecialtyId}");
             }
+
             var entity = new Doctor()
             {
                 Name = doctor.Name,
@@ -52,7 +56,6 @@ namespace Application.Services
                 Password = doctor.Password
             };
 
-
             var doctorEntity = _doctorRepository.Create(entity);
             return DoctorDto.CreateDoctorDto(doctorEntity);
         }
@@ -60,32 +63,32 @@ namespace Application.Services
         {
             var entity = _doctorRepository.GetById(id);
             var specialty = _specialtyRepository.GetById(doctor.SpecialtyId);
+
+            if (entity == null) 
+            {
+                throw new NotFoundException($"No se encontro el medico con el id{id}");
+            }
             if (specialty == null)
             {
-                throw new NotFoundException("No se encontro especialidad.");
+                throw new NotFoundException($"No se encontro especialidad con el id {doctor.SpecialtyId}.");
             }
 
-            if (entity != null)
-            {
-                entity.Name = doctor.Name;
-                entity.LastName = doctor.LastName;
-                entity.PhoneNumber = doctor.PhoneNumber;
-                entity.DateOfBirth = doctor.DateOfBirth;
-                entity.SpecialtyId = doctor.SpecialtyId;
+            entity.Name = doctor.Name;
+            entity.LastName = doctor.LastName;
+            entity.PhoneNumber = doctor.PhoneNumber;
+            entity.DateOfBirth = doctor.DateOfBirth;
+            entity.SpecialtyId = doctor.SpecialtyId;
 
-
-                var newEntity = _doctorRepository.Update(entity);
-                return DoctorDto.CreateDoctorDto(newEntity);
-            }
-
-            throw new ArgumentException("All fields are required.");
+            var newEntity = _doctorRepository.Update(entity);
+            return DoctorDto.CreateDoctorDto(newEntity);
+            
         }
         public DoctorDto DeleteDoctor(int id)
         {
             var doctor = _doctorRepository.GetById(id);
             if (doctor == null)
             {
-                throw new NotFoundException("No se encontro doctor.");
+                throw new NotFoundException($"No se encontro doctor con el id {id}");
             }
             var entity = _doctorRepository.Delete(doctor);
             return DoctorDto.CreateDoctorDto(entity);
@@ -93,12 +96,13 @@ namespace Application.Services
         }
         public IEnumerable<DoctorDto> GetBySpecialty(int id)
         {
-            var listDoctor = _doctorRepository.GetDoctorsBySpecialty(id);
-            if (listDoctor == null)
+            var specialty = _specialtyRepository.GetById(id);
+            if (specialty == null)
             {
-                throw new NotFoundException("No se encontro especialidad.");
+                throw new NotFoundException($"No se encontro especialidad con el id {id}.");
             }
 
+            var listDoctor = _doctorRepository.GetDoctorsBySpecialty(id);
             return DoctorDto.CreatelistDto(listDoctor);
         }
 
