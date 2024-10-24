@@ -48,12 +48,20 @@ namespace Application.Services
             return AppointmentDto.CreateList(listAppointments);
         }
 
-        public IEnumerable<AppointmentDto> GetByDoctorAndDate(int idDoctor, DateTime date)
+        public IEnumerable<AppointmentDto> GetAppointmentsAvailable(int id)
         {
-            var list = _appointmentRepository.GetAvailableAppointmentsByDoctorAndDate(idDoctor, date);
-            return AppointmentDto.CreateList(list);
+            var entity = _doctorRepository.GetById(id);
+
+            if (entity ==null)
+            {
+                throw new NotFoundException($"No se encontró doctor con el id indicado {id}");
+            }
+            var listAppointments = _appointmentRepository.GetByAvailable(id);
+            return AppointmentDto.CreateList(listAppointments);
+
         }
 
+     
         public void GenerateAppointmentForDoctor(int doctorId, DateRangeRequest Date)
         {
             var doctor = _doctorRepository.GetById(doctorId);
@@ -79,7 +87,7 @@ namespace Application.Services
                     {
                         DoctorId = doctorId,
                         Date = date.Date,
-                        Time = time,
+                        Time = time.ToString(@"hh\:mm\:ss"),
                         Status = AppointmentStatus.Available,
                         PatientId = null
                     };
@@ -94,7 +102,7 @@ namespace Application.Services
                     {
                         DoctorId = doctorId,
                         Date = date.Date,
-                        Time = time,
+                        Time = time.ToString(@"hh\:mm\:ss"),
                         Status = AppointmentStatus.Available,
                         PatientId = null
                     };
@@ -107,14 +115,21 @@ namespace Application.Services
         public AppointmentDto CreateAppointment(AppointmentCreateRequest appointment)
         {
             var appointmentsDb = _appointmentRepository.GetAppointmentByDoctorId(appointment.DoctorId);
-
-            if (!appointmentsDb.Any(a => appointment.Date == a.Date && appointment.Time == a.Time))
+            if (appointment.PatientId is not null) {
+                var patient = _patientRepository.GetByIdIncludeAddress(appointment.PatientId.Value);
+                if (patient == null)
+                {
+                    throw new NotFoundException("No existe paciente con el ID indicado");
+                } 
+            }
+            
+            if (!appointmentsDb.Any(a => appointment.Date == a.Date && TimeSpan.Parse(appointment.Time) == a.Time)) //Agregar validación de hora
             {
                 var newAppointemnt = new Appointment()
                 {
                     DoctorId = appointment.DoctorId,
                     PatientId = appointment.PatientId,
-                    Time = appointment.Time,
+                    Time = TimeSpan.Parse(appointment.Time),
                     Date = appointment.Date,
                     Status = AppointmentStatus.Available,
                 };
@@ -124,7 +139,8 @@ namespace Application.Services
                 return AppointmentDto.CreateDto(newAppointemnt);
             }
 
-            throw new NotFoundException("Este turno ya existe.");
+            throw new NotFoundException("Ya existe un turno en el horario ingresado.");
+
         }
 
         public AppointmentDto CancelAppointment(int IdAppointment)
@@ -159,12 +175,13 @@ namespace Application.Services
                 throw new NotFoundException("No esta disponible.");
             }
 
-            //var currentTime = DateTime.Now.TimeOfDay;
+            var currentTime = DateTime.Now.TimeOfDay;
+            
 
-            //if ((entity.Time - currentTime).TotalMinutes <= 30)
-            //{
-            //    throw new NotFoundException("No se puede asignar turnos con menos de 30 minutos de anticipacion.");
-            //}
+            if ((entity.Time - currentTime).TotalMinutes <= 30)
+            {
+                throw new NotFoundException("No se puede asignar turnos con menos de 30 minutos de anticipacion.");
+            }
 
             entity.PatientId = appointmentAssign.IdPatient;
 

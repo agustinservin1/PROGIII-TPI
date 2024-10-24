@@ -12,7 +12,7 @@ namespace Application.Models.Request
         public int DoctorId { get; set; }
         public int? PatientId { get; set; }
         public DateTime Date { get; set; }
-        public TimeSpan Time { get; set; }
+        public string Time { get; set; } = string.Empty;
         public AppointmentStatus Status { get; set; }
     }
 }

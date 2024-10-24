@@ -48,17 +48,12 @@ namespace Infrastructure.Data
             return appointments;
         }
 
-        public IEnumerable<Appointment> GetAvailableAppointmentsByDoctorAndDate(int doctorId, DateTime date)
-        {
-            return _repository.Appointments.Where(d => d.Date == date && d.DoctorId == doctorId)
-                                          .Include(d => d.Doctor)
-                                          .Include(d => d.Patient)
-                                          .ToList();
-        }
+       
 
-        public IEnumerable<Appointment> GetByAvailable()
+        public IEnumerable<Appointment> GetByAvailable(int id)
         {
-            return _repository.Appointments.Where(a => a.Status == AppointmentStatus.Available)
+            
+            return _repository.Appointments.Where(a =>a.DoctorId == id && a.Status == AppointmentStatus.Available && a.Date >= DateTime.Now )
                                            .ToList();
         }
     }

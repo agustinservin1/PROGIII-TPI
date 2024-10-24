@@ -40,15 +40,20 @@ namespace Web.Controllers
         public IActionResult GetAllByPatientId(int patientId)
         {
             return Ok(_appointmentService.GetAllByPatientId(patientId));
-        }
-
-        [HttpGet("SearchAppointmentByDoctorsAndDate/")]
-        public IActionResult GetByDoctorAndDate([FromQuery] int doctorId, [FromQuery] DateTime date)
+        }    
+        
+        [HttpGet("/GetAppointmentsAvailable")]
+        public IActionResult GetAppointmentsAvailable(int id) 
         {
-            return Ok(_appointmentService.GetByDoctorAndDate(doctorId, date));
+            return Ok(_appointmentService.GetAppointmentsAvailable(id));
+        }
+        [HttpPost("/CreateAppointment")]
+        public IActionResult CreateAppointment(AppointmentCreateRequest appointmentCreateRequest)
+        {
+            return Ok(_appointmentService.CreateAppointment(appointmentCreateRequest));
         }
 
-        [HttpPost("/AssignAppointment")]
+        [HttpPut("/AssignAppointment")]
         public IActionResult AssignAppointment([FromBody] AppointmentAssignForRequest appointmentAssign)
         {
             return Ok(_appointmentService.AssignAppointment(appointmentAssign));
