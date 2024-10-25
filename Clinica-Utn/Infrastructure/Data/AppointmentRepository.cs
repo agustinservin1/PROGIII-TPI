@@ -52,9 +52,14 @@ namespace Infrastructure.Data
 
         public IEnumerable<Appointment> GetByAvailable(int id)
         {
-            
-            return _repository.Appointments.Where(a =>a.DoctorId == id && a.Status == AppointmentStatus.Available && a.Date >= DateTime.Now )
-                                           .ToList();
+
+            DateTime today = DateTime.Today; 
+
+            return _repository.Appointments
+                              .Where(a => a.DoctorId == id
+                                       && a.Status == AppointmentStatus.Available
+                                       && a.Date >= today)
+                              .ToList();
         }
     }
 }

@@ -71,7 +71,7 @@ namespace Application.Services
             {
                 throw new NotFoundException($"No se encontró el paciente con el id {id}");
             }
-            //Revisar esta validaciones.
+            
             if (patient.Address == null)
             {
                 throw new NotFoundException($"No se encontró la direccion con el id {id}");

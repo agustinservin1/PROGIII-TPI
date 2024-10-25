@@ -145,7 +145,7 @@ namespace Application.Services
 
         public AppointmentDto CancelAppointment(int IdAppointment)
         {
-            var entity = _appointmentRepository.GetById(IdAppointment) ?? throw new Exception("Cita no encontrada.");
+            var entity = _appointmentRepository.GetById(IdAppointment) ?? throw new NotFoundException("Cita no encontrada.");
 
             entity.Status = AppointmentStatus.Canceled;
 
@@ -160,14 +160,14 @@ namespace Application.Services
 
             if (entity == null)
             {
-                throw new Exception("Cita no encontrada.");
+                throw new NotFoundException("Cita no encontrada.");
             }
 
             var patient = _patientRepository.GetByIdIncludeAddress(appointmentAssign.IdPatient);
 
             if (patient == null)
             {
-                throw new Exception("Paciente no encontrado.");
+                throw new NotFoundException("Paciente no encontrado.");
             }
 
             if (entity.Status != AppointmentStatus.Available)
@@ -175,12 +175,13 @@ namespace Application.Services
                 throw new NotFoundException("No esta disponible.");
             }
 
-            var currentTime = DateTime.Now.TimeOfDay;
-            
 
-            if ((entity.Time - currentTime).TotalMinutes <= 30)
+            var currentDateTime = DateTime.Now;
+            var appointmentDateTime = entity.Date + entity.Time;
+
+            if ((appointmentDateTime - currentDateTime).TotalMinutes <= 30)
             {
-                throw new NotFoundException("No se puede asignar turnos con menos de 30 minutos de anticipacion.");
+                throw new NotFoundException("No se puede asignar turnos con menos de 30 minutos de anticipación.");
             }
 
             entity.PatientId = appointmentAssign.IdPatient;
