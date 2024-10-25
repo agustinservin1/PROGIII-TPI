@@ -22,21 +22,21 @@ namespace Web.Controllers
         }
 
         [HttpGet("{id}")]
-
         public IActionResult GetWithAddress(int id)
         {
             var result = _service.GetPatientByIdWithAddress(id);
             return Ok(result);
         }
-        [HttpGet()]
+
+        [HttpGet("GetAll")]
         public IActionResult GetAllPatientsWithAddress()
         {
             var result = _service.GetPatientsWithAddress();
             return Ok(result);
         }
 
-        [HttpPost]
-        //[Authorize(Policy = "Patient")]
+        [HttpPost("AddPatient")]
+        [Authorize(Policy = "Admin")]
         public IActionResult AddPatient([FromBody] PatientCreateRequest request)
         {
             var newObj = _service.CreatePatient(request);
@@ -44,20 +44,20 @@ namespace Web.Controllers
             return CreatedAtAction(nameof(GetWithAddress), new { id = newObj.Id }, newObj);
         }
 
-        [HttpPut("/{id}")]
+        [HttpPut("Update/{id}")]
+        [Authorize(Policy = "Patient")]
         public IActionResult UpdatePatient(int id, [FromBody] PatientUpdateForRequest request)
         {
             _service.UpdatePatient(id, request);
             return NoContent();
         }
 
-        [HttpDelete("/{id}")]
-
+        [HttpDelete("Delete/{id}")]
+        [Authorize(Policy = "Admin")]
         public IActionResult DeletePatient(int id)
         {
             _service.DeletePatient(id);
             return NoContent();
         }
-
     }
 }

@@ -1,7 +1,9 @@
 ﻿using Application.Interfaces;
 using Application.Models.Request;
 using Application.Services;
+using Domain.Entities;
 using Domain.Exceptions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -20,55 +22,66 @@ namespace Web.Controllers
         [HttpGet("/{id}")]
         public IActionResult GetById(int id)
         {
-            return Ok(_appointmentService.GetById(id));
+            var appointment = _appointmentService.GetById(id);
+            return Ok(appointment);
+        }
+
+        [HttpGet("GetByDoctorId/{doctorId}")]
+        public IActionResult GetAllByDoctorId(int doctorId)
+        {
+            var appointment = _appointmentService.GetAllByDoctorId(doctorId);
+            return Ok(appointment);
+        }
+
+        [HttpGet("GetByPatientId/{patientId}")]
+        public IActionResult GetAllByPatientId(int patientId)
+        {
+            var appointment = _appointmentService.GetAllByPatientId(patientId);
+            return Ok(appointment);
+        }    
+        
+        [HttpGet("GetAvailableByDoctorId")]
+        public IActionResult GetAppointmentsAvailable(int id) 
+        {
+            var appointment = _appointmentService.GetAppointmentsAvailable(id);
+            return Ok(appointment);
         }
 
         [HttpPost("GenerateAppointments/{doctorId}")]
+        [Authorize(Policy = "Doctor")]
         public IActionResult GenerateAppointments(int doctorId, [FromBody] DateRangeRequest dateRange)
         {
             _appointmentService.GenerateAppointmentForDoctor(doctorId, dateRange);
             return Ok("Turnos generados con éxito.");
         }
 
-        [HttpGet("/GetAppointmentByDoctorId/{doctorId}")]
-        public IActionResult GetAllByDoctorId(int doctorId)
-        {
-            return Ok(_appointmentService.GetAllByDoctorId(doctorId));
-        }
-
-        [HttpGet("/GetAppointmentByPatientId/{patientId}")]
-        public IActionResult GetAllByPatientId(int patientId)
-        {
-            return Ok(_appointmentService.GetAllByPatientId(patientId));
-        }    
-        
-        [HttpGet("/GetAppointmentsAvailable")]
-        public IActionResult GetAppointmentsAvailable(int id) 
-        {
-            return Ok(_appointmentService.GetAppointmentsAvailable(id));
-        }
-        [HttpPost("/CreateAppointment")]
+        [HttpPost("CreateAppointment")]
+        [Authorize(Policy = "Doctor")]
         public IActionResult CreateAppointment(AppointmentCreateRequest appointmentCreateRequest)
         {
-            return Ok(_appointmentService.CreateAppointment(appointmentCreateRequest));
+            var appointment = _appointmentService.CreateAppointment(appointmentCreateRequest);
+            return Ok(appointment);
         }
 
-        [HttpPut("/AssignAppointment")]
+        [HttpPut("AssignAppointment")]
+        [Authorize(Policy = "Patient")]
         public IActionResult AssignAppointment([FromBody] AppointmentAssignForRequest appointmentAssign)
         {
             return Ok(_appointmentService.AssignAppointment(appointmentAssign));
         }
 
-        [HttpPut("/CancelAppointment{id}")]
+        [HttpPut("Cancel/{id}")]
         public IActionResult UpdateAppointment(int id)
         {
-            return Ok(_appointmentService.CancelAppointment(id));
+            var appointment = _appointmentService.CancelAppointment(id);
+            return Ok(appointment);
         }
 
-        [HttpDelete("/DeleteAppointment{id}")]
+        [HttpDelete("Delete/{id}")]
+        [Authorize(Policy = "Admin")]
         public IActionResult DeleteAppointment(int id)
         {
-                var appointment = _appointmentService.DeleteAppointment(id);
+                _appointmentService.DeleteAppointment(id);
                 return NoContent();
         }
     }
