@@ -7,6 +7,7 @@ using Domain.InterFaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -15,9 +16,11 @@ namespace Application.Services
     public class AdminService: IAdminService
     {
         private readonly IAdminRepository _adminRepository;
-        public AdminService(IAdminRepository adminRepository)
+        private readonly IUserRepository _userRepository;   
+        public AdminService(IAdminRepository adminRepository, IUserRepository userRepository)
         {
             _adminRepository = adminRepository;
+            _userRepository = userRepository;
         }
         
         public AdminDto GetById(int id)
@@ -39,6 +42,11 @@ namespace Application.Services
 
         public AdminDto CreateAdminDto(AdminCreateRequest admin) 
         {
+            var emailValidate = _userRepository.ValidateEmail(admin.Email);
+            if (emailValidate != null)
+            {
+                throw new NotFoundException($"Ya existe un usuario registrado con este email {admin.Email}");
+            }
             var entity = new Admin()
             {
                 Name = admin.Name,
@@ -59,6 +67,12 @@ namespace Application.Services
             if (entity == null)
             {
                 throw new NotFoundException($"No se encontró el Admin con el id {id}");
+            }
+            
+            var emailValidate = _userRepository.ValidateEmail(admin.Email);
+            if (emailValidate != null)
+            {
+                throw new NotFoundException($"Ya existe un usuario registrado con este email {admin.Email}");
             }
 
             entity.Name = admin.Name;

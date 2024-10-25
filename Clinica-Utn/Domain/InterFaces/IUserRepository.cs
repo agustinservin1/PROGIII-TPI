@@ -10,5 +10,6 @@ namespace Domain.InterFaces
     public interface IUserRepository
     {
         User? Authenticate(string email, string password);
+        User? ValidateEmail(string email);
     }
 }

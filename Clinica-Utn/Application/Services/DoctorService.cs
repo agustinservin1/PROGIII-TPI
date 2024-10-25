@@ -17,10 +17,12 @@ namespace Application.Services
     {
         private readonly IDoctorRepository _doctorRepository;
         private readonly ISpecialtyRepository _specialtyRepository;
-        public DoctorService(IDoctorRepository doctorRepository, ISpecialtyRepository specialtyRepository)
+        private readonly IUserRepository _userRepository;
+        public DoctorService(IDoctorRepository doctorRepository, ISpecialtyRepository specialtyRepository, IUserRepository userRepository)
         {
             _doctorRepository = doctorRepository;
             _specialtyRepository = specialtyRepository;
+            _userRepository = userRepository;
         }
 
         public DoctorDto GetById(int id)
@@ -40,6 +42,12 @@ namespace Application.Services
         public DoctorDto CreateDoctor(DoctorCreateRequest doctor)
         {
             var specialty = _specialtyRepository.GetById(doctor.SpecialtyId);
+
+            var emailValidate = _userRepository.ValidateEmail(doctor.Email);
+            if (emailValidate != null)
+            {
+                throw new NotFoundException($"Ya existe un usuario registrado con este email {doctor.Email}");
+            }
             if (specialty == null)
             {
                 throw new NotFoundException($"No se encontro la especialidad con el id {doctor.SpecialtyId}");
@@ -71,6 +79,11 @@ namespace Application.Services
             if (specialty == null)
             {
                 throw new NotFoundException($"No se encontro especialidad con el id {doctor.SpecialtyId}.");
+            }
+            var emailValidate = _userRepository.ValidateEmail(doctor.Email);
+            if (emailValidate != null)
+            {
+                throw new NotFoundException($"Ya existe un usuario registrado con este email {doctor.Email}");
             }
 
             entity.Name = doctor.Name;

@@ -7,6 +7,7 @@ using Domain.InterFaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -15,10 +16,12 @@ namespace Application.Services
     public class PatientService : IPatientService
     {
         private readonly IPatientRepository _repository;
+        private readonly IUserRepository _userRepository;
 
-        public PatientService(IPatientRepository patientRepository)
+        public PatientService(IPatientRepository patientRepository, IUserRepository userRepository)
         {
             _repository = patientRepository;
+            _userRepository = userRepository;
         }
 
         public PatientDto? GetPatientByIdWithAddress(int id)
@@ -39,8 +42,13 @@ namespace Application.Services
         }
 
         public PatientDto CreatePatient(PatientCreateRequest patient)
-        { 
-                var newAdress = new Address()
+        {
+            var emailValidate = _userRepository.ValidateEmail(patient.Email);
+            if (emailValidate != null)
+            {
+                throw new NotFoundException($"Ya existe un usuario registrado con este email {patient.Email}");
+            }
+            var newAdress = new Address()
                 {
                     Street = patient.Address.Street,
                     PostalCode = patient.Address.PostalCode,
@@ -76,8 +84,13 @@ namespace Application.Services
             {
                 throw new NotFoundException($"No se encontró la direccion con el id {id}");
             }
-            
-                entity.Name = patient.Name;
+            var emailValidate = _userRepository.ValidateEmail(patient.Email);
+            if (emailValidate != null)
+            {
+                throw new NotFoundException($"Ya existe un usuario registrado con este email {patient.Email}");
+            }
+
+            entity.Name = patient.Name;
                 entity.LastName = patient.LastName;
                 entity.PhoneNumber = patient.PhoneNumber;
                 entity.DateOfBirth = patient.DateOfBirth;

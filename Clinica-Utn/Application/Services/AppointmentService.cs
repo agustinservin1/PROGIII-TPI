@@ -114,6 +114,11 @@ namespace Application.Services
 
         public AppointmentDto CreateAppointment(AppointmentCreateRequest appointment)
         {
+            if (!TimeSpan.TryParse(appointment.Time, out var appointmentTime)) 
+            {
+                throw new NotFoundException("Hora inválida. Ingrese la hora en el formato HH:mm.");
+            }
+            
             var appointmentsDb = _appointmentRepository.GetAppointmentByDoctorId(appointment.DoctorId);
             if (appointment.PatientId is not null) {
                 var patient = _patientRepository.GetByIdIncludeAddress(appointment.PatientId.Value);
@@ -122,10 +127,19 @@ namespace Application.Services
                     throw new NotFoundException("No existe paciente con el ID indicado");
                 } 
             }
+
+            DateTime appointmentDateTime = appointment.Date.Date + TimeSpan.Parse(appointment.Time);
+
+            DateTime currentDateTime = DateTime.Now;
             
-            if (!appointmentsDb.Any(a => appointment.Date == a.Date && TimeSpan.Parse(appointment.Time) == a.Time)) //Agregar validación de hora
+            if (appointmentDateTime < currentDateTime)
             {
-                var newAppointemnt = new Appointment()
+                throw new NotFoundException("No se pueden crear turnos en una fecha y hora pasada.");
+            }
+
+            if (!appointmentsDb.Any(a => (a.Date.Date + a.Time) == appointmentDateTime))
+            {
+                var newAppointment = new Appointment()
                 {
                     DoctorId = appointment.DoctorId,
                     PatientId = appointment.PatientId,
@@ -134,17 +148,15 @@ namespace Application.Services
                     Status = AppointmentStatus.Available,
                 };
 
-                _appointmentRepository.Create(newAppointemnt);
-
-                return AppointmentDto.CreateDto(newAppointemnt);
+                _appointmentRepository.Create(newAppointment);
+                return AppointmentDto.CreateDto(newAppointment);
             }
 
             throw new NotFoundException("Ya existe un turno en el horario ingresado.");
+            }
 
-        }
-
-        public AppointmentDto CancelAppointment(int IdAppointment)
-        {
+      public AppointmentDto CancelAppointment(int IdAppointment)
+      {
             var entity = _appointmentRepository.GetById(IdAppointment) ?? throw new NotFoundException("Cita no encontrada.");
 
             entity.Status = AppointmentStatus.Canceled;

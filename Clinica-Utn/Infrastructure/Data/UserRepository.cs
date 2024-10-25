@@ -22,5 +22,9 @@ namespace Infrastructure.Data
             User? userToAuthenticate = _context.Set<User>().FirstOrDefault(u => u.Email == email && u.Password == password);
             return userToAuthenticate;
         }
+        public User? ValidateEmail (string email) {
+            User? validateUserEmail = _context.Set<User>().FirstOrDefault(u=>u.Email == email); 
+            return validateUserEmail;
     }
+}
 }
