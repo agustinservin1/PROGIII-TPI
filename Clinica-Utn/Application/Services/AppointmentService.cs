@@ -38,12 +38,22 @@ namespace Application.Services
 
         public IEnumerable<AppointmentDto> GetAllByDoctorId(int id)
         {
+            var doctor = _doctorRepository.GetById(id);
+            if (doctor == null)
+            {
+                throw new NotFoundException($"No existe doctor con el id {id}");
+            }
             var listAppointments = _appointmentRepository.GetAppointmentByDoctorId(id);
             return AppointmentDto.CreateList(listAppointments);
         }
 
         public IEnumerable<AppointmentDto> GetAllByPatientId(int id)
         {
+            var patient = _patientRepository.GetByIdIncludeAddress(id);
+            if(patient == null)
+            {
+                throw new NotFoundException($"No existe paciente con el id {id}");
+            }
             var listAppointments = _appointmentRepository.GetAppointmentByPatientId(id);
             return AppointmentDto.CreateList(listAppointments);
         }

@@ -43,14 +43,14 @@ namespace Application.Services
         {
             var specialty = _specialtyRepository.GetById(doctor.SpecialtyId);
 
+            if (specialty == null)
+            {
+                throw new NotFoundException($"No se encontro la especialidad con el id {doctor.SpecialtyId}");
+            }
             var emailValidate = _userRepository.ValidateEmail(doctor.Email);
             if (emailValidate != null)
             {
                 throw new NotFoundException($"Ya existe un usuario registrado con este email {doctor.Email}");
-            }
-            if (specialty == null)
-            {
-                throw new NotFoundException($"No se encontro la especialidad con el id {doctor.SpecialtyId}");
             }
 
             var entity = new Doctor()

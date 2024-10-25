@@ -2,6 +2,7 @@
 using Application.Models;
 using Application.Models.Request;
 using Domain.Entities;
+using Domain.Enums;
 using Domain.Exceptions;
 using Domain.InterFaces;
 using System;
@@ -17,11 +18,13 @@ namespace Application.Services
     {
         private readonly IPatientRepository _repository;
         private readonly IUserRepository _userRepository;
+        private readonly IAppointmentRepository _appointmentRepository;
 
-        public PatientService(IPatientRepository patientRepository, IUserRepository userRepository)
+        public PatientService(IPatientRepository patientRepository, IUserRepository userRepository, IAppointmentRepository appointmentRepository)
         {
             _repository = patientRepository;
             _userRepository = userRepository;
+            _appointmentRepository = appointmentRepository;
         }
 
         public PatientDto? GetPatientByIdWithAddress(int id)
@@ -91,17 +94,17 @@ namespace Application.Services
             }
 
             entity.Name = patient.Name;
-                entity.LastName = patient.LastName;
-                entity.PhoneNumber = patient.PhoneNumber;
-                entity.DateOfBirth = patient.DateOfBirth;
-                entity.Address.City = patient.Address.City;
-                entity.Address.Street = patient.Address.Street;
-                entity.Address.Province = patient.Address.Province;
-                entity.Address.PostalCode = patient.Address.PostalCode;
+            entity.LastName = patient.LastName;
+            entity.PhoneNumber = patient.PhoneNumber;
+            entity.DateOfBirth = patient.DateOfBirth;
+            entity.Email = patient.Email;    
+            entity.Address.City = patient.Address.City;
+            entity.Address.Street = patient.Address.Street;
+            entity.Address.Province = patient.Address.Province;
+            entity.Address.PostalCode = patient.Address.PostalCode;
 
-               
-                var newEntity = _repository.Update(entity);
-                return PatientDto.CreatePatient(newEntity);
+            var newEntity = _repository.Update(entity);
+            return PatientDto.CreatePatient(newEntity);
            
         }
 
@@ -113,6 +116,17 @@ namespace Application.Services
             if (entity == null)
             {
                 throw new NotFoundException($"No se encontró el paciente con el id {id}");
+            }
+
+            var appointnts = _appointmentRepository.GetAppointmentByPatientId(id);
+
+            if (appointnts != null)
+            {
+                foreach (Appointment appointment in appointnts) 
+                {
+                    appointment.PatientId = null;
+                    appointment.Status = AppointmentStatus.Available;
+                }
             }
             var patient = _repository.Delete(entity);
             return PatientDto.CreatePatient(patient);
