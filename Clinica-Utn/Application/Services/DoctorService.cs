@@ -47,6 +47,12 @@ namespace Application.Services
             {
                 throw new NotFoundException($"No se encontro la especialidad con el id {doctor.SpecialtyId}");
             }
+
+            if(specialty.Status == false)
+            {
+                throw new NotFoundException($"Esta especialidad no se encuentra disponible en este momento");
+            }
+
             var emailValidate = _userRepository.ValidateEmail(doctor.Email);
             if (emailValidate != null)
             {

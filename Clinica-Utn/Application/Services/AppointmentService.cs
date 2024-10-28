@@ -219,9 +219,20 @@ namespace Application.Services
         {
             var appointment = _appointmentRepository.GetById(IdAppointment);
 
-            var entity = _appointmentRepository.Delete(appointment);
+            if (appointment == null)
+            {
+                throw new NotFoundException($"No existe el turno con el id {IdAppointment}");
+            }
 
-            return AppointmentDto.CreateDto(entity);
+            if (appointment.PatientId == null) 
+            {
+                var entity = _appointmentRepository.Delete(appointment);
+                return AppointmentDto.CreateDto(entity);
+            }
+            else
+            {
+                throw new NotFoundException("No se puede eliminar, un turno con un paciente asignado.");
+            }
         }
     }
 }

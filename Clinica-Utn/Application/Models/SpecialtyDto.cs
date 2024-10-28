@@ -13,7 +13,7 @@ namespace Application.Models
         public string Name { get; set; } = string.Empty;
 
         public string Description { get; set; } = string.Empty;
-
+        public bool Status { get; set; }
         public static SpecialtyDto CreateSpecialtyDto(Specialty specialty)
         {
             var specialtyDto = new SpecialtyDto()
@@ -21,6 +21,7 @@ namespace Application.Models
                 Id = specialty.Id,
                 Name = specialty.Name,
                 Description = specialty.Description,
+                Status = specialty.Status,
             };
 
             return specialtyDto;

@@ -13,6 +13,7 @@ namespace Application.Interfaces
         SpecialtyDto GetSpecialtyById(int id);
         IEnumerable<SpecialtyDto> GetAllSpecialties();
         SpecialtyDto CreateSpecialty(SpecialtyForRequest specialty);
+        public string DeleteSpecialty(int id);
 
 
     }

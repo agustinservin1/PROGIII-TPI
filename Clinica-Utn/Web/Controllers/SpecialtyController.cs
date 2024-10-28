@@ -39,5 +39,11 @@ namespace Web.Controllers
             var newSpecialty = _service.CreateSpecialty(request);
             return CreatedAtAction(nameof(GetById), new { id = newSpecialty.Id }, newSpecialty);
         }
+        [HttpDelete]
+        public IActionResult DeleteById(int id) 
+        {
+            var response = _service.DeleteSpecialty(id);
+            return Ok(response);
+        }
     }
 }

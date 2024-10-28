@@ -16,6 +16,12 @@ namespace Domain.Entities
         public string Name { get; set; } = string.Empty;
         [MaxLength(400)]
         public string Description { get; set; } = string.Empty;
+        public bool Status { get; set; }
         public IEnumerable<Doctor> SpecialtyDoctors { get; set; } = new List<Doctor>();
+
+        public Specialty() 
+        {
+            Status = true;
+        }
     }
 }
